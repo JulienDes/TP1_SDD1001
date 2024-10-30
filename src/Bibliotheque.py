@@ -1,6 +1,6 @@
-from Auteur import Auteur
-from Emprunteur import Emprunteur
-from Livre import Livre
+from src.Auteur import Auteur
+from src.Emprunteur import Emprunteur
+from src.Livre import Livre
 
 class Bibliotheque:
 
@@ -13,6 +13,9 @@ class Bibliotheque:
     def ajouter_livre(self, book_id: str, titre: str, auteur: Auteur):
 
         try:
+            if book_id in self.livres:
+                raise ValueError(f"Un livre avec l'ID {book_id} existe déjà.")
+
             auteur_key = (auteur.nom, auteur.nationalite)
 
             # Si auteur_key n'existe pas ajout auteur dictionnaire
@@ -23,14 +26,13 @@ class Bibliotheque:
             else:
                 auteur = self.auteurs[auteur_key]
 
-            if book_id in self.livres:
-                raise ValueError(f"Un livre avec l'ID {book_id} existe déjà.")
-
             # Creation nouveau livre
             nouveau_livre = Livre(book_id=book_id, titre=titre, auteur=auteur)
 
-            # Ajout de l'oeuvre
-            auteur.ajouter_oeuvre(nouveau_livre)
+            if not any(livre.titre == nouveau_livre.titre for livre in auteur.oeuvres):
+                # Ajout de l'oeuvre
+                auteur.ajouter_oeuvre(nouveau_livre)
+
 
             self.livres[nouveau_livre.book_id] = nouveau_livre
 

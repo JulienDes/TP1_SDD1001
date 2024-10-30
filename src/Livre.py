@@ -1,7 +1,8 @@
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from Auteur import Auteur
+    from src.Auteur import Auteur
+
 
 class Livre:
     """
@@ -14,6 +15,15 @@ class Livre:
         disponible (bool): Sa disponibilite
     """
     def __init__(self, book_id: str, titre: str, auteur: 'Auteur', disponible=True):
+        from src.Auteur import Auteur
+
+        if not isinstance(book_id, str):
+            raise ValueError("Le book_id doit être une chaîne non vide")
+        if not isinstance(titre, str):
+            raise ValueError("Le titre doit être une chaîne non vide")
+        if not isinstance(auteur, Auteur):
+            raise ValueError("L'auteur doit être une instance de Auteur")
+
         self.book_id = book_id
         self.titre = titre
         self.auteur = auteur

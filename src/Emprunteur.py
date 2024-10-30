@@ -22,4 +22,4 @@ class Emprunteur:
 
 
     def __str__(self):
-        return f"Emprunteur(id={self.id}, nom='{self.nom}', livres_empruntes={len(self.livres_empruntes)})"
+        return f"Emprunteur(id={self.emprunteur_id}, nom='{self.nom}', livres_empruntes={len(self.livres_empruntes)})"

@@ -13,34 +13,6 @@ class TestBibliothequeMethods(unittest.TestCase):
 
     def test_ajouter_livre(self):
         """
-        Teste la méthode ajouter_livre en ajoutant un livre et en vérifiant son ajout correct.
-            Etapes :
-            1. Créer un auteur nommé 'Julien' de nationalité 'Canadien'.
-            2. Ajouter un livre avec ID '1' intitulé "Amos daragon tome 1" par cet auteur.
-            3. Récupérer le livre dans le dictionnaire de la bibliothèque et vérifier:
-                - Que le livre est bien présent (non None).
-                - Que le titre, le nom de l'auteur et la nationalité correspondent aux valeurs attendues.
-
-        Raises:
-            ValueError: Si le livre ajoute a la bibliotheque a le meme id qu'un livre deja present.
-        """
-
-        auteur = Auteur('Julien', 'Canadien')   # Crée un auteur
-        self.bibliotheque.ajouter_livre(book_id='1', titre="Amos daragon tome 1", auteur=auteur)
-
-        livre = self.bibliotheque.livres.get('1') # Récupère le livre ajouté
-        self.assertIsNotNone(livre, "Le livre avec l'ID 1 n'a pas été ajouté.") # Vérifie que le livre existe
-
-        # Vérifie que les détails du livre sont corrects
-        self.assertEqual((livre.titre, livre.auteur.nom, livre.auteur.nationalite),
-                         ("Amos daragon tome 1", "Julien", "Canadien"))
-
-        # Vérifie les cas d'erreur attendus
-        with self.assertRaises(ValueError, msg=f"Un livre avec le meme ID '1' devrait declancher une erreur"):
-            self.bibliotheque.ajouter_livre(book_id='1', titre="Amos daragon tome 1", auteur=auteur)  # Livre avec le meme id deja la
-
-    def test_ajouter_plusieurs_livres(self):
-        """
         Teste la méthode ajouter_livre en ajoutant plusieurs livres et en vérifiant leur ajout et l'unicité par auteur.
 
         Étapes :
@@ -120,7 +92,7 @@ class TestBibliothequeMethods(unittest.TestCase):
 
         Vérifications :
         - Que le résultat de la recherche soit un dictionnaire.
-        - Que l'ID du livre ajouté ('1') soit présent dans les résultats.
+        - Que l'ID du livre ajouté ('String') soit présent dans les résultats.
         - Que le titre et l'auteur correspondent aux informations du livre ajouté.
         - Que rechercher un livre inexistant déclenche une erreur.
 
@@ -136,16 +108,18 @@ class TestBibliothequeMethods(unittest.TestCase):
 
         # Test pour une recherche qui devrait trouver le livre
         recherche = self.bibliotheque.rechercher_livre('ju')
+
         self.assertIsInstance(recherche, dict, "Le résultat de la recherche doit être un dictionnaire.")
+
         self.assertIn('1', recherche, "Le livre avec l'ID '1' devrait être trouvé dans la recherche.")
         self.assertIn('2', recherche, "Le livre avec l'ID '2' devrait être trouvé dans la recherche.")
+        self.assertNotIn('3', recherche, "Le livre avec l'ID '3' ne devrait pas être trouvé dans la recherche.")
+
         self.assertEqual(recherche['1'].titre, "Amos daragon tome 1", "Le titre du livre trouvé devrait être correct.")
         self.assertEqual(recherche['2'].titre, "Travaillier avec Julien", "Le titre du livre trouvé devrait être correct.")
-        self.assertNotIn('3', recherche, "Le livre avec l'ID '3' ne devrait pas être trouvé dans la recherche.")
 
         self.assertEqual(recherche['1'].auteur.nom, "Julien",
                          "Le nom de l'auteur du livre trouvé devrait être correct.")
-
         self.assertEqual(recherche['2'].auteur.nom, "Alexandre",
                          "Le nom de l'auteur du livre trouvé devrait être correct.")
 
@@ -162,11 +136,6 @@ class TestBibliothequeMethods(unittest.TestCase):
             - Un livre peut être emprunté par un emprunteur
             - Le livre devient indisponible après avoir été emprunté
             - Le livre est ajouté à la liste des livres empruntés de l'emprunteur
-
-        Le test couvre également les cas d'erreur suivants :
-            - Emprunt par un emprunteur inexistant
-            - Emprunt d'un livre inexistant
-            - Emprunt d'un livre déjà emprunté
 
         Raises:
             ValueError: Si l'emprunteur ou le livre n'existent pas, ou si le livre est déjà emprunté.
@@ -217,11 +186,9 @@ class TestBibliothequeMethods(unittest.TestCase):
         Teste la fonctionnalité de retour d'un livre dans la bibliothèque.
 
         Ce test vérifie le bon fonctionnement du processus de retour d'un livre emprunté,
-        en s'assurant que le livre redevient disponible et que l'emprunteur n'a plus le livre
-        dans sa liste de livres empruntés. Il couvre également les cas d'erreurs suivants :
-            - Retour par un emprunteur inexistant
-            - Retour d'un livre inexistant
-            - Retour d'un livre qui n'a pas été emprunté
+        en s'assurant que:
+            - le livre redevient disponible
+            - l'emprunteur n'a plus le livre dans sa liste de livres empruntés.
 
         Raises:
             ValueError: Si l'emprunteur ou le livre n'existent pas, ou si le livre n'est pas emprunté.
